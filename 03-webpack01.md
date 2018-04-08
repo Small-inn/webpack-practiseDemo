@@ -28,3 +28,17 @@
 2. Output(打包生成的文件、一个或者多个、自定义规则)
 3. Loader(处理文件，转化为模块)
 4. Plugins(参与整个大包过程，打包优化和压缩，配置编译时的变量)
+
+## 常用的plugins
+- 优化相关的
+    - CommonsChunkPlugin
+    - UglifyjsWebpackPlugin
+- 功能相关
+    - ExtractTextWebpackPlugin
+    - HtmlWebpackPlugin
+    - HotModuleReplacementPlugin
+    - CopyWebpackPlugin
+## 名词
+- chunk 代码块
+- bundle 一捆，打包之后的
+- module 模块
