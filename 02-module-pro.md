@@ -1,4 +1,5 @@
 ## 命名空间
+---
 ```
 var NameSpace = {}
 NameSpace.name = 
