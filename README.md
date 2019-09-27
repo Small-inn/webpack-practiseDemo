@@ -135,12 +135,16 @@ npm install webpack webpack-cli --save-dev
 14. tree shaking(摇树优化)
     模块中可能有多个方法，只要其中某个方法使用到了，则整个文件都会被打到 bundle 里面去，tree shaking 就是只把用到的方法打入 bundle，没用到的方法会在 uglify 阶段擦出掉，支持 es6，不支持 cjs 写法
     使用：webpack 默认支持，在.babelrc 里设置 modules: false 即可
+
 15. scoped Hoisting 的使用以及原理分析
     大量函数闭包包裹代码，导致体积增大
     被 webpack 转换后的模块会带上一层包裹
     import 会被转换成\_webpack_require
     原理：将所有模块的 diamante 按照引用顺序放在一个函数的作用域里，然后适当的重命名一些变量防止变量名冲突
     对比：通过 scope hoisting 可以减少函数生命代码和内存开销
+
 16. 代码分割（动态 import）
     抽离相同代码到一个共享块
     脚本懒加载，使得初始下载的代码更小
+
+17. 在 webpack 中使用 ESLint
