@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 // 生产的代码不需要热更新
 module.exports = {
@@ -43,7 +44,8 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name]_[contenthash:8].css'
-    })
+    }),
+    new webpack.CleanWebpackPlugin()
   ]
   // plugins: [new webpack.HotModuleReplacementPlugin()],
   // devServer: {
