@@ -2,11 +2,12 @@
 
 const path = require('path')
 const glob = require('glob')
+const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+// const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 
 const setMPA = () => {
   const entry = {}
@@ -51,7 +52,8 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name]_[chunkhash:8].js'
   },
-  mode: 'production',
+  // mode: 'production', // 如果mode的值是production,会默认开启一些webpack4的内置插件
+  mode: 'none',
   module: {
     rules: [
       {
@@ -119,7 +121,7 @@ module.exports = {
       assetNameRegExp: /\.css$/g,
       cssProcessor: require('cssnano')
     }),
-    new CleanWebpackPlugin() // 自动清除构建产物
+    new CleanWebpackPlugin(), // 自动清除构建产物
     // new HtmlWebpackExternalsPlugin({
     //   externals: [
     //     {
@@ -134,20 +136,21 @@ module.exports = {
     //     }
     //   ],
     // })
+    new webpack.optimize.ModuleConcatenationPlugin() // scope Hoisting()
   ].concat(htmlWebpackPlugin),
   // devtool: 'source-map'
-  optimization: {
-    splitChunks: {
-      minSize: 0, // 提取公共文件的最小大小
-      cacheGroups: {
-        commons: {
-          // test: /(react|react-dom)/,
-          // name: 'vendors',
-          name: 'commons',
-          chunks: 'all',
-          minChunks: 2
-        }
-      }
-    }
-  }
+  // optimization: {
+  //   splitChunks: {
+  //     minSize: 0, // 提取公共文件的最小大小
+  //     cacheGroups: {
+  //       commons: {
+  //         // test: /(react|react-dom)/,
+  //         // name: 'vendors',
+  //         name: 'commons',
+  //         chunks: 'all',
+  //         minChunks: 2
+  //       }
+  //     }
+  //   }
+  // }
 }
