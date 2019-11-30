@@ -1,16 +1,52 @@
 'use strict'
 
 const path = require('path')
+const glob = require('glob')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+
+const setMPA = () => {
+  const entry = {}
+  const htmlWebpackPlugin = []
+  const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'))
+
+  Object.keys(entryFiles).map(index => {
+    const entryFile = entryFiles[index]
+    const match = entryFile.match(/src\/(.*)\/index\.js/)
+    const pageName = match && match[1]
+    // console.log(pageName)
+    entry[pageName] = entryFile
+    htmlWebpackPlugin.push(
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, `src/${pageName}/index.html`),
+        filename: `${pageName}.html`,
+        chunks: ['vendors', pageName],
+        inject: true,
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          preserveLineBreaks: false,
+          minifyCSS: true,
+          minifyJS: true,
+          removeComments: false
+        }
+      })
+    )
+  })
+  // console.log(entryFiles)
+  return {
+    entry,
+    htmlWebpackPlugin
+  }
+}
+
+const { entry, htmlWebpackPlugin } = setMPA()
 
 module.exports = {
-  entry: {
-    index: './src/index.js',
-    search: './src/search.js'
-  },
+  entry: entry,
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name]_[chunkhash:8].js'
@@ -33,13 +69,20 @@ module.exports = {
           'css-loader',
           'less-loader',
           {
-            loader: 'postcss-loader',
+            loader: 'postcss-loader', // autoprefixer、css3自动添加前缀loader
             options: {
               plugins: () => [
                 require('autoprefixer')({
                   browsers: ['last 2 version', '>1%', 'ios 7']
                 })
               ]
+            }
+          },
+          {
+            loader: 'px2rem-loader', // 尺寸适配兼容loader
+            options: {
+              remUnit: 75, // 基础单位1rem = 75px
+              remPrecision: 8 // 小数点
             }
           }
         ]
@@ -76,34 +119,35 @@ module.exports = {
       assetNameRegExp: /\.css$/g,
       cssProcessor: require('cssnano')
     }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/index.html'),
-      filename: 'index.html',
-      chunks: ['index'],
-      inject: true,
-      minify: {
-        html5: true,
-        collapseWhitespace: true,
-        preserveLineBreaks: false,
-        minifyCSS: true,
-        minifyJS: true,
-        removeComments: false
+    new CleanWebpackPlugin() // 自动清除构建产物
+    // new HtmlWebpackExternalsPlugin({
+    //   externals: [
+    //     {
+    //       module: 'react',
+    //       entry: 'https://11.url.cn/now/lib/4/react-with-addons.min.js', // 可以是本地文件或者cdn文件
+    //       global: 'React',
+    //     },
+    //     {
+    //       module: 'react-dom',
+    //       entry: 'dist/jquery.min.js',
+    //       global: 'ReactDom',
+    //     }
+    //   ],
+    // })
+  ].concat(htmlWebpackPlugin),
+  // devtool: 'source-map'
+  optimization: {
+    splitChunks: {
+      minSize: 0, // 提取公共文件的最小大小
+      cacheGroups: {
+        commons: {
+          // test: /(react|react-dom)/,
+          // name: 'vendors',
+          name: 'commons',
+          chunks: 'all',
+          minChunks: 2
+        }
       }
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/search.html'),
-      filename: 'search.html',
-      chunks: ['search'],
-      inject: true,
-      minify: {
-        html5: true,
-        collapseWhitespace: true,
-        preserveLineBreaks: false,
-        minifyCSS: true,
-        minifyJS: true,
-        removeComments: false
-      }
-    }),
-    new CleanWebpackPlugin()
-  ]
+    }
+  }
 }
