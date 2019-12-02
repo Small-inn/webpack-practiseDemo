@@ -5,7 +5,8 @@ const glob = require('glob')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+// const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 const setMPA = () => {
     const entry = {}
@@ -84,24 +85,26 @@ module.exports = {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new CleanWebpackPlugin()
-    // new HtmlWebpackExternalsPlugin({
-    //   externals: [
-    //     {
-    //       module: 'react',
-    //       entry: 'https://11.url.cn/now/lib/4/react-with-addons.min.js', // 可以是本地文件或者cdn文件
-    //       global: 'React'
-    //     },
-    //     {
-    //       module: 'react-dom',
-    //       entry: 'dist/jquery.min.js',
-    //       global: 'ReactDom'
-    //     }
-    //   ]
-    // })
+        new CleanWebpackPlugin(),
+        // new HtmlWebpackExternalsPlugin({
+        //   externals: [
+        //     {
+        //       module: 'react',
+        //       entry: 'https://11.url.cn/now/lib/4/react-with-addons.min.js', // 可以是本地文件或者cdn文件
+        //       global: 'React'
+        //     },
+        //     {
+        //       module: 'react-dom',
+        //       entry: 'dist/jquery.min.js',
+        //       global: 'ReactDom'
+        //     }
+        //   ]
+        // })
+        new FriendlyErrorsWebpackPlugin()
     ].concat(htmlWebpackPlugin),
     devServer: {
         contentBase: './dist',
-        hot: true
+        hot: true,
+        // stats: 'errors-only' // preset构建时命令行日志信息
     }
 }

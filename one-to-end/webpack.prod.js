@@ -8,6 +8,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 // const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 const setMPA = () => {
     const entry = {}
@@ -52,8 +53,8 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: '[name]_[chunkhash:8].js'
     },
-    // mode: 'production', // 如果mode的值是production,会默认开启一些webpack4的内置插件
-    mode: 'none',
+    mode: 'production', // 如果mode的值是production,会默认开启一些webpack4的内置插件
+    // mode: 'none',
     module: {
         rules: [
             {
@@ -136,8 +137,10 @@ module.exports = {
         //     }
         //   ],
         // })
-        new webpack.optimize.ModuleConcatenationPlugin() // scope Hoisting()
-    ].concat(htmlWebpackPlugin)
+        // new webpack.optimize.ModuleConcatenationPlugin() // scope Hoisting(),mode=production默认开启
+        new FriendlyErrorsWebpackPlugin() // 优化构建命令日志
+    ].concat(htmlWebpackPlugin),
+    // stats: 'errors-only' // preset构建时命令行日志信息 效果类似于friendly-errors-webpack-plugin插件
     // devtool: 'source-map'
     // optimization: {
     //   splitChunks: {
