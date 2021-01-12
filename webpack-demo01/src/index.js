@@ -11,9 +11,4 @@ img.classList.add('avatar')
 const root = document.getElementById('root')
 root.append(img)
 
-function test() {
-  console.log(1111)
-  return 1231783216
-}
-
-test()
+console.log('lx')

@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "bundle": "webpack"
+    "bundle": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack serve",
+    "server": "node server.js"
   },
   "keywords": [],
   "author": "small-inn",
@@ -11,11 +14,14 @@
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^5.0.1",
+    "express": "^4.17.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.5.1",
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.12.3",
-    "webpack-cli": "^4.3.1"
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-middleware": "^4.0.2",
+    "webpack-dev-server": "^3.11.1"
   }
 }

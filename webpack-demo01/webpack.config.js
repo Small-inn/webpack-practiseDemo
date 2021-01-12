@@ -4,8 +4,17 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
   mode: 'development',
+  // devtool: 'source-map', // cheap-source-map、cheap-module-eval-source-map
   entry: {
-    main: './index.js',
+    main: './src/index.js'
+    // sub: './src/index.js'
+  },
+  devServer: {
+    contentBase: './dist',
+    open: true,
+    port: 8088,
+    hot: true,
+    hotOnly: true
   },
   module: {
     rules: [
@@ -44,14 +53,17 @@ module.exports = {
   },
 
   output: {
-    filename: 'index.js',
+    // publicPath: 'http://cdn.com.cn',
+    publicPath: '/',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   },
 
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html'
+      template: './src/index.html'
     }),
+    new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin()
   ]
 
