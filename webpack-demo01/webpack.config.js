@@ -19,6 +19,19 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: { 
+          presets: [['@babel/preset-env', {
+            targets: {
+              chrome: '67' 
+            },
+            useBuiltIns: 'usage'
+          }]]
+        }
+      },
+      {
         test: /\.(jpg|jpeg|png|gif)$/,
         use: {
           // loader: 'file-loader',
