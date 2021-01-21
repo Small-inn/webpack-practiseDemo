@@ -50,27 +50,24 @@ module.exports = {
           MiniCssExtractPlugin.loader, 
           'css-loader', 
           'less-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: [
-                require('autoprefixer')({
-                  browsers: ['last 2 version', '>1%', 'ios7']
-                }),
-              ]
-            }
-          }
           // {
           //   loader: 'postcss-loader',
           //   options: {
-          //     plugins: () => [
+          //     ident: 'postcss',
+          //     plugins: [
           //       require('autoprefixer')({
           //         browsers: ['last 2 version', '>1%', 'ios7']
-          //       })
+          //       }),
           //     ]
           //   }
-          // }
+          // },
+          {
+            loader: 'px2rem-loader',
+            options: {
+              remUnit: 75,
+              remPrecision: 8
+            }
+          }
         ]
       },
       {

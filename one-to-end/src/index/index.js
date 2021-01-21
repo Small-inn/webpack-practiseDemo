@@ -1,3 +1,4 @@
-import { helloworld } from './helloworld';
+import { helloworld } from './helloworld'
+import '../../common/index'
 
-document.write(helloworld());
+document.write(helloworld())

@@ -4,7 +4,7 @@ const path = require('path')
 const glob = require('glob')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+// const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 // const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
@@ -17,7 +17,6 @@ const setMPA = () => {
         const entryFile = entryFiles[index]
         const match = entryFile.match(/src\/(.*)\/index\.js/)
         const pageName = match && match[1]
-        // console.log(pageName)
         entry[pageName] = entryFile
         htmlWebpackPlugin.push(
             new HtmlWebpackPlugin({
@@ -36,7 +35,6 @@ const setMPA = () => {
             })
         )
     })
-    // console.log(entryFiles)
     return {
         entry,
         htmlWebpackPlugin
@@ -85,7 +83,7 @@ module.exports = {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new CleanWebpackPlugin(),
+        // new CleanWebpackPlugin(),
         // new HtmlWebpackExternalsPlugin({
         //   externals: [
         //     {
@@ -106,5 +104,6 @@ module.exports = {
         contentBase: './dist',
         hot: true,
         // stats: 'errors-only' // preset构建时命令行日志信息
-    }
+    },
+    devtool: 'source-map'
 }

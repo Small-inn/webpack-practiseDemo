@@ -16,7 +16,7 @@ export default function add(a, b) {
     }
 
     if (j >= 0) {
-      y = b[j] = '0'
+      y = b[j] - '0'
       j--
     }
 

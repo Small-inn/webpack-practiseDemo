@@ -142,6 +142,7 @@ npm install webpack webpack-cli --save-dev
     import 会被转换成\_webpack_require
     原理：将所有模块的 diamante 按照引用顺序放在一个函数的作用域里，然后适当的重命名一些变量防止变量名冲突
     对比：通过 scope hoisting 可以减少函数生命代码和内存开销
+    webpack.prod.js ===> plugins: [ new webpack.optimize.ModuleConcatenationPlugin() ]
 
 16. 代码分割（动态 import）
     抽离相同代码到一个共享块

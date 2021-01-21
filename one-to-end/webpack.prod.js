@@ -7,17 +7,18 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-// const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 const setMPA = () => {
     const entry = {}
     const htmlWebpackPlugin = []
     const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'))
-
+    // console.log(entryFiles)
     Object.keys(entryFiles).map(index => {
         const entryFile = entryFiles[index]
         const match = entryFile.match(/src\/(.*)\/index\.js/)
+        // console.log('match', match)
         const pageName = match && match[1]
         // console.log(pageName)
         entry[pageName] = entryFile
@@ -53,7 +54,7 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: '[name]_[chunkhash:8].js'
     },
-    mode: 'production', // 如果mode的值是production,会默认开启一些webpack4的内置插件
+    mode: 'production', // 如果mode的值是production,会默认开启一些webpack4的内置插件, (不支持cjs)如tree shaking、scope hoisting
     // mode: 'none',
     module: {
         rules: [
@@ -123,37 +124,39 @@ module.exports = {
             cssProcessor: require('cssnano')
         }),
         new CleanWebpackPlugin(), // 自动清除构建产物
-        // new HtmlWebpackExternalsPlugin({
-        //   externals: [
-        //     {
-        //       module: 'react',
-        //       entry: 'https://11.url.cn/now/lib/4/react-with-addons.min.js', // 可以是本地文件或者cdn文件
-        //       global: 'React',
-        //     },
-        //     {
-        //       module: 'react-dom',
-        //       entry: 'dist/jquery.min.js',
-        //       global: 'ReactDom',
-        //     }
-        //   ],
-        // })
+        new HtmlWebpackExternalsPlugin({
+            externals: [
+                {
+                    module: 'react',
+                    entry: 'https://now8.gtimg.com/now/lib/16.8.6/react.min.js', // 可以是本地文件或者cdn文件
+                    global: 'React',
+                },
+                {
+                    module: 'react-dom',
+                    entry: 'https://now8.gtimg.com/now/lib/16.8.6/react-dom.min.js',
+                    global: 'ReactDOM',
+                }
+            ],
+        }),
         // new webpack.optimize.ModuleConcatenationPlugin() // scope Hoisting(),mode=production默认开启
         new FriendlyErrorsWebpackPlugin() // 优化构建命令日志
     ].concat(htmlWebpackPlugin),
+
+
     // stats: 'errors-only' // preset构建时命令行日志信息 效果类似于friendly-errors-webpack-plugin插件
-    // devtool: 'source-map'
+    // devtool: 'source-map' // eval(将代码包裹起来)、source-map(会生成.map文件)、inline-source-map()
     // optimization: {
-    //   splitChunks: {
-    //     minSize: 0, // 提取公共文件的最小大小
-    //     cacheGroups: {
-    //       commons: {
-    //         // test: /(react|react-dom)/,
-    //         // name: 'vendors',
-    //         name: 'commons',
-    //         chunks: 'all',
-    //         minChunks: 2
-    //       }
+    //     splitChunks: {
+    //         minSize: 0, // 提取公共文件的最小大小
+    //         cacheGroups: {
+    //             commons: {
+    //                 // test: /(react|react-dom)/,
+    //                 // name: 'vendors',
+    //                 name: 'commons',
+    //                 chunks: 'all',
+    //                 minChunks: 2 // 最小引用次数
+    //             }
+    //         }
     //     }
-    //   }
     // }
 }

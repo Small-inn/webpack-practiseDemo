@@ -1,9 +1,10 @@
-'use strict';
+'use strict'
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import logo from '../images/logo.png';
-import './search.less';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import '../../common/index'
+import logo from '../images/logo.png'
+import './search.less'
 
 class Search extends React.Component {
     constructor() {
@@ -23,6 +24,7 @@ class Search extends React.Component {
     }
 
     render() {
+        // debugger
         const { Text } = this.state
         return <div className="search-text">
             {
