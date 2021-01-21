@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -20,7 +21,18 @@ module.exports = {
       },
       {
         test: /.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [
+          'style-loader', 
+          'css-loader'
+        ]
+      },
+      {
+        test: /.less$/,
+        use: [
+          'style-loader',
+          'css-loader', 
+          'less-loader'
+        ]
       },
       {
         test: /.(png|jpg|gif|jpeg)$/,
@@ -30,8 +42,9 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    // new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/index.html'),
+      template: path.join(__dirname, './src/index.html'),
       filename: 'index.html',
       chunks: ['index'],
       inject: true,

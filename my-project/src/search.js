@@ -2,7 +2,7 @@ document.write('search')
 
 import React from 'react'
 import ReactDom from 'react-dom'
-import './search.css'
+import './search.less'
 import logo from './images/logo.jpg'
 
 class Search extends React.Component {

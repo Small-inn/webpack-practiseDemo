@@ -1,9 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 // 生产的代码不需要热更新
 module.exports = {
@@ -24,11 +24,54 @@ module.exports = {
       },
       {
         test: /.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
+        use: [
+          MiniCssExtractPlugin.loader, 
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    'autoprefixer',
+                    {
+                      browsers: ['last 2 version', '>1%', 'ios7']
+                    }
+                  ]
+                ]
+              }
+            }
+          }
+        ]
       },
       {
         test: /.less$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
+        use: [
+          MiniCssExtractPlugin.loader, 
+          'css-loader', 
+          'less-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: [
+                require('autoprefixer')({
+                  browsers: ['last 2 version', '>1%', 'ios7']
+                }),
+              ]
+            }
+          }
+          // {
+          //   loader: 'postcss-loader',
+          //   options: {
+          //     plugins: () => [
+          //       require('autoprefixer')({
+          //         browsers: ['last 2 version', '>1%', 'ios7']
+          //       })
+          //     ]
+          //   }
+          // }
+        ]
       },
       {
         test: /.(png|jpg|gif|jpeg)$/,
@@ -43,14 +86,21 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new CssMinimizerPlugin(),
+    ],
+  },
   plugins: [
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name]_[contenthash:8].css'
     }),
-    new OptimizeCssAssetsPlugin({
-      assetsNameRegExp: /\.css$/g,
-      cssProcesssor: require('cssnano')
-    }),
+    // new OptimizeCssAssetsPlugin({
+    //   assetsNameRegExp: /\.css$/g,
+    //   cssProcesssor: require('cssnano')
+    // }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/index.html'),
       filename: 'index.html',
@@ -66,9 +116,4 @@ module.exports = {
       }
     })
   ]
-  // plugins: [new webpack.HotModuleReplacementPlugin()],
-  // devServer: {
-  //   contentBase: './dist',
-  //   hot: true
-  // }
 }
