@@ -36,7 +36,6 @@ const setMPA = () => {
       })
     )
   })
-  // console.log(entryFiles)
   return {
     entry,
     htmlWebpackPlugin
@@ -46,7 +45,7 @@ const setMPA = () => {
 const { entry, htmlWebpackPlugin } = setMPA()
 
 module.exports = {
-  entry: entry,
+  entry: entry, 
   output: {
     path: path.join(projectRoot, 'dist'),
     filename: '[name]_[chunkhash:8].js'
@@ -71,7 +70,7 @@ module.exports = {
             loader: 'postcss-loader', // autoprefixer、css3自动添加前缀loader
             options: {
               plugins: () => [
-                require('autoprefixer')({
+                autoprefixer({
                   browsers: ['last 2 version', '>1%', 'ios 7']
                 })
               ]
@@ -123,6 +122,7 @@ module.exports = {
           stats.compilation.errors.length &&
           process.argv.indexOf('--watch') === -1
         ) {
+          console.log('builder error') // eslint-disable-line
           process.exit(1)
         }
       })

@@ -9,6 +9,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
+const SpeedMeasureWebpackPlugin  = require('speed-measure-webpack-plugin')
+
+const smp = new SpeedMeasureWebpackPlugin()  // 打包速度分析
+
 
 const setMPA = () => {
     const entry = {}
@@ -48,7 +52,7 @@ const setMPA = () => {
 
 const { entry, htmlWebpackPlugin } = setMPA()
 
-module.exports = {
+module.exports = smp.wrap({
     entry: entry,
     output: {
         path: path.join(__dirname, 'dist'),
@@ -142,7 +146,6 @@ module.exports = {
         new FriendlyErrorsWebpackPlugin() // 优化构建命令日志
     ].concat(htmlWebpackPlugin),
 
-
     // stats: 'errors-only' // preset构建时命令行日志信息 效果类似于friendly-errors-webpack-plugin插件
     // devtool: 'source-map' // eval(将代码包裹起来)、source-map(会生成.map文件)、inline-source-map()
     // optimization: {
@@ -159,4 +162,4 @@ module.exports = {
     //         }
     //     }
     // }
-}
+})
