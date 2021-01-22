@@ -143,7 +143,10 @@ module.exports = smp.wrap({
             ],
         }),
         // new webpack.optimize.ModuleConcatenationPlugin() // scope Hoisting(),mode=production默认开启
-        new FriendlyErrorsWebpackPlugin() // 优化构建命令日志
+        new FriendlyErrorsWebpackPlugin(), // 优化构建命令日志
+        new webpack.DllReferencePlugin({
+            manifest: './build/library/library.json'
+        })
     ].concat(htmlWebpackPlugin),
 
     // stats: 'errors-only' // preset构建时命令行日志信息 效果类似于friendly-errors-webpack-plugin插件
