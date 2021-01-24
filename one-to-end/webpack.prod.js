@@ -151,7 +151,7 @@ module.exports = smp.wrap({
 
     // stats: 'errors-only' // preset构建时命令行日志信息 效果类似于friendly-errors-webpack-plugin插件
     // devtool: 'source-map' // eval(将代码包裹起来)、source-map(会生成.map文件)、inline-source-map()
-    // optimization: {
+    optimization: {
     //     splitChunks: {
     //         minSize: 0, // 提取公共文件的最小大小
     //         cacheGroups: {
@@ -163,6 +163,12 @@ module.exports = smp.wrap({
     //                 minChunks: 2 // 最小引用次数
     //             }
     //         }
-    //     }
-    // }
+    //     },
+        // minimizer: [
+        //     new TerserPlugin({
+        //         paralles: true, //
+        //         cache: true
+        //     })
+        // ]
+    }
 })

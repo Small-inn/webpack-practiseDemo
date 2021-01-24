@@ -4,11 +4,12 @@
 
 study webpack config
 
-## 初始 webpack
+## webpack
 
+### 一、基础用法
 1. 配置文件名称
    : webpack.config.js
-   可以通过 webpack --config 指定配置文件
+   package.json中可以通过 webpack --config 指定配置文件
 2. webpack 配置组成
 
 ```
@@ -53,6 +54,8 @@ npm install webpack webpack-cli --save-dev
    * HTML 压缩:html-webpack-plugin,设置压缩参数
    css 压缩:optimize-css-assets-webpack-plugin 配合 cssnano(处理器)
    * js 压缩:内置 uglifyjs-webpack-plugin
+
+### 二、进阶用法
 
 7. 自动清理构建目录产物
    * rm -rf ./dist && webpack
@@ -213,6 +216,8 @@ npm install webpack webpack-cli --save-dev
   * 在发布重要版本之前可以先发布alpha，rc等先行版本
   * 遵守semver规范
 
+### 三、构建速度以及构建体积优化策略
+
 25. 构建速度以及体积优化策略
   * 构建的统计信息： stats（webpack内置）
   * 速度分析：speed-measure-webpack-plugin
@@ -246,6 +251,91 @@ npm install webpack webpack-cli --save-dev
 28. 分包
   * 设置Externals, 将框架库基础包等通过cdn引入，不打入bundle
   * 预编译资源模块， DLLReferencePlugin引用manifest.json
+
+29. 缓存
+  * 提高二次构建效率
+  * 缓存思路
+    - babel-loader 开启缓存
+    - terser-webpack-plugin 开启缓存
+    - cache-loader / hard-source-webpack-plugin 
+
+30. 擦除无用css
+  * PurifyCSS: 遍历代码，识别已经用到的 CSS class
+  * uncss: HTML 需要通过 jsdom 加载，所有的样式通过PostCSS解析，通过 document.querySelector 来识别在 html 文件里面不存在的选择器
+
+31. 图片压缩
+  * 配置image-webpack-loader
+  * imagemin
+
+31. 动态polyfill
+  * polyfill-service
+  * 原理：识别User-Agent,下发不同的polyfill
+
+### 四、webpack源码分析
+
+32. 启动过程分析
+  * 实际入口是node_modules\webpack\bin\webpack.js
+  ```javascript
+  process.exitCode = 0; //1. 正常执行返回 
+  const runCommand = (command, args) =>{...}; //2. 运行某个命令
+  const isInstalled = packageName =>{...}; //3. 判断某个包是否安装
+  const CLIs =[...]; //4. webpack 可用的 CLI: webpack-cli 和 webpack-command 
+  const installedClis = CLIs.filter(cli => cli.installed); //5. 判断是否两个 ClI 是否安装了 
+  if (installedClis.length === 0){...}else if (installedClis.length === 1){...}else{...} //6. 根据安装数量进行处理
+  ```
+  * 找到webpack-cli这个包，并且执行cli
+  * webpack-cli启动流程
+    - 引入yargs，对命令进行定制
+    - 分析命令参数，对各个参数进行转换，组成编译配置项
+    - 引用webpack，根据配置项进行编译和构建
+  * NON_COMPLATION_CMD分析出不需要编译的命令
+  ```javascript
+    const { NON_COMPILATION_ARGS } = require("./utils/constants"); 
+    const NON_COMPILATION_CMD = process.argv.find(arg => { 
+      if (arg === "serve") { 
+        global.process.argv = global.process.argv.filter(a => a !== "serve"); 
+        process.argv = global.process.argv; 
+      }
+      return NON_COMPILATION_ARGS.find(a => a === arg); 
+    });
+    if (NON_COMPILATION_CMD) { 
+      return require("./utils/prompt-command")(NON_COMPILATION_CMD, ...process.argv); 
+    }
+
+  ```
+  * 不需要webpack编译的命令
+  ```javascript
+  const NON_COMPILATION_ARGS = [ 
+    "init", //创建一份 webpack 配置文件 
+    "migrate", //进行 webpack 版本迁移 
+    "add", //往 webpack 配置文件中增加属性 
+    "remove", //往 webpack 配置文件中删除属性 
+    "serve", //运行 webpack-serve 
+    "generate-loader", //生成 webpack loader 代码 
+    "generate-plugin", //生成 webpack plugin 代码 
+    "info" // 返回与本地环境相关的一些信息 
+    ]
+  
+  ```
+
+  * webpack-cli参数分组（config/config-args.js）,9类
+    - Config options: 配置相关参数(文件名称、运行环境等) 
+    - Basic options: 基础参数(entry设置、debug模式设置、watch监听设置、devtool设置) 
+    - Module options: 模块参数，给 loader 设置扩展 
+    - Output options: 输出参数(输出路径、输出文件名称) 
+    - Advanced options: 高级用法(记录设置、缓存设置、监听频率、bail等) 
+    - Resolving options: 解析参数(alias 和 解析的文件后缀设置) 
+    - Optimizing options: 优化参数 
+    - Stats options: 统计参数 
+    - options: 通用参数(帮助命令、版本信息等)
+
+  * webpack-cli执行结果
+    - webpack-cli对配置文件和命令行参数进行转换最终生成配置选项参数 options 最终会根据配置参数实例化 webpack 对象，然后执行构建流程
+
+  * webpack本质
+    - 可以将其理解是一种基于事件流的编程范例，一系列的插件运行。
+
+  * Tapable： Tapable 是一个类似于 Node.js 的 EventEmitter 的库, 主要是控制钩子函数的发布 与订阅,控制着 webpack 的插件系统。
 
 
 
