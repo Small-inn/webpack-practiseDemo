@@ -1,6 +1,6 @@
 const JSZip = require('jszip')
 const path = require('path')
-const RawSource = require('webpack-sources')
+const RawSource = require('webpack-sources').RawSource
 const zip = new JSZip()
 
 module.exports = class MyPlugin {
@@ -26,8 +26,15 @@ module.exports = class MyPlugin {
         // console.log(content)   
         // console.log(compilation.options)
         
-        const outputPath = path.join(compilation.options.output.path, this.options.filename + '.zip')
-        compilation.assets[outputPath] = new RawSource(content)
+        const outputPath = path.join(
+          compilation.options.output.path, 
+          this.options.filename + '.zip'
+        )
+        const outputRelativePath = path.relative(
+          compilation.options.output.path,
+          outputPath
+        )
+        compilation.assets[outputRelativePath] = new RawSource(content)
         callback()
       })
     })
