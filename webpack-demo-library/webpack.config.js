@@ -9,7 +9,6 @@ module.exports = {
     filename: 'library.js',
     library: 'library', 
     libraryTarget: 'umd' // 挂载到全局
-
   },
   module: {},
   plugins: []

@@ -339,6 +339,21 @@ npm install webpack webpack-cli --save-dev
 
 33. webpack工作流程
 
+34. loader
 
+35. plugin
+  * 插件没有loader那样的独立运行环境，只能在webpack中运行
+  * 插件的基本结构
+  ```javascript
+    class MyPlugin {
+      apply(compiler) {
+        compiler.hooks.done.tap('My Plugin', (stats) => {
+          console.log('Just like joker!!!')
+        })
+      }
+    }
+    module.exports = MyPlugin
+  
+  ```
 
 
