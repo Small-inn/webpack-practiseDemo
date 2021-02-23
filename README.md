@@ -166,6 +166,19 @@ npm install webpack webpack-cli --save-dev
       - warning: 构建警告的日志提示
       - error: 构建报错的日志提示
 
+18.1 构建异常和中断命处理
+    * 
+  ```javascript
+    function() {
+      this.hooks.done.tap('done', (stats) => {
+          if (stats.compilation.errors && stats.compilation.errors.length && process.argv.indexOf('--watch') == -1) {
+              console.log('build error')
+              process.exit(1)
+          }
+      })
+    }
+  ```
+
 19. 构建配置抽离成npm包
   * 通用性
     - 业务开发者无需关注构建配置
