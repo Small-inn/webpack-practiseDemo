@@ -166,8 +166,10 @@ npm install webpack webpack-cli --save-dev
       - warning: 构建警告的日志提示
       - error: 构建报错的日志提示
 
-18.1 构建异常和中断命处理
-    * 
+18.1. 构建异常和中断命处理
+  * Node中process.exit规范
+    - 0表示成功完成
+    - 非0表示执行失败，回调函数中，err不为null，exit.code就是传给exit的是数字
   ```javascript
     function() {
       this.hooks.done.tap('done', (stats) => {
@@ -263,14 +265,31 @@ npm install webpack webpack-cli --save-dev
 
 28. 分包
   * 设置Externals, 将框架库基础包等通过cdn引入，不打入bundle
-  * 预编译资源模块， DLLReferencePlugin引用manifest.json
+  * 预编译资源模块， 使用DLLPlugin进行分包，DLLReferencePlugin引用manifest.json
 
 29. 缓存
-  * 提高二次构建效率
+  * 为了提高二次构建效率
   * 缓存思路
     - babel-loader 开启缓存
     - terser-webpack-plugin 开启缓存
     - cache-loader / hard-source-webpack-plugin 
+
+29.1. 缩小构建目标
+  * 尽可能的减少构建模块
+  ```javascript
+    module.exports = {
+      rules: {
+        test: /\.js$/,
+        loader: 'happypack/loader',
+        exclude: 'node_module'
+      }
+    }
+  ```
+29.2. 减少文件搜索范围
+  * 优化resolve.module配置（减少模块搜索层级）
+  * 优化resolve.mainFields配置
+  * 优化resolve.extension配置
+  * 合理使用alias
 
 30. 擦除无用css
   * PurifyCSS: 遍历代码，识别已经用到的 CSS class
@@ -279,6 +298,9 @@ npm install webpack webpack-cli --save-dev
 31. 图片压缩
   * 配置image-webpack-loader
   * imagemin
+    - 可以定制选项
+    - 引入第三方插件
+    - 处理更多的图片格式
 
 31. 动态polyfill
   * polyfill-service
